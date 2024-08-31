@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
-
+from ventas import Ventas
+from inventario import Inventario
 class Container(tk.Frame):
     def __init__(self, padre, controlador):
         super().__init__(padre)
@@ -9,6 +10,7 @@ class Container(tk.Frame):
         self.place(x=0, y=0, width=800, height=400)
         #color de la ventana
         self.config(bg="#C6D9E3")
+        self.widgets()
 
     def show_frames(self, container):
         top_level = tk.Toplevel(self)
@@ -21,5 +23,17 @@ class Container(tk.Frame):
     def ventas(self):
         self.show_frames(Ventas)
 
-        def inventario(self):
-            self.show_frames(inventario)
+    def inventario(self):
+        self.show_frames(Inventario)
+
+    def widgets(self):
+        
+        frame1 = tk.Frame(self, bg="#C6D9E3")
+        frame1.pack()
+        frame1.place(x=0, y=0, width=800, height=400)
+
+        btnventas = Button(frame1, bg="green", fg="black", text="ir a ventas", command=self.ventas)
+        btnventas.place(x=500, y=30, width=240, height=60)
+
+        btninventario = Button(frame1, bg="blue", fg="white", text="ir a invertario", command=self.inventario)
+        btninventario.place(x=500, y=130, width=240, height=60)
