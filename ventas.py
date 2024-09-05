@@ -22,3 +22,10 @@ class Ventas(tk.Frame):
 
         lblframe = LabelFrame(frame2, text="INFORMACION DE LA VENTA", bg="#C6D9E3", font="sans 16 bold")
         lblframe.place(x=10, y=10, width=1160, height=80)
+
+        label_numero_factura = tk.Label(lblframe, text="Numero de \nFactura", bg="#C6D9E3", font="sans 12 bold")
+        label_numero_factura.place(x=10, y=5)
+        self.numero_factura = tk.StringVar()
+
+        self.entry_numero_factura = ttk.Entry(lblframe, textvariable=self.numero_factura, state="readonly", font="sans 12 bold")
+        self.entry_numero_factura.place(x=100, y=5, width=80)
