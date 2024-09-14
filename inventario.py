@@ -11,10 +11,33 @@ class Inventario(tk.Frame):
 
     def widgets(self):
 
-        frame1 = tk.Frame(self, bg="#dddddd")
+        frame1 = tk.Frame(self, bg="#dddddd", highlightbackground="gray", highlightthickness=1)
         frame1.pack()
         frame1.place(x=0 , y=0, width=1100, height=100)
 
-        titulo = tk.Label(self, text="INVENTARIOS", bg="#dddddd")
+        titulo = tk.Label(self, text="INVENTARIOS", bg="#dddddd", font="sans 30 bold", anchor="center")
         titulo.pack()
         titulo.place(x=5, y=0, width=1090, height=90)
+        
+        frame2 = tk.Frame(self, bg="#C6D9E3", highlightbackground="gray", highlightthickness=1)
+        frame2.place(x=0, y=100, width=1100, height=550)
+
+        labelframe = LabelFrame(frame2, text="productos", font="sans 22 bold", bg="#C6D9E3")
+        labelframe.place(x=20, y=30, width=400, height=500)
+
+        lblnombre = Label(labelframe, text="nombre: ", font="sans 14 bold", bg="#C6D9E3")
+        lblnombre.place(x=10, y=20)
+        self.nombre = ttk.Entry(labelframe, font="sans 14 bold")
+        self.nombre.place(x=140, y=20, width=240, height=40)
+
+        lblproveedor = Label(labelframe, text="proveedor", font="sans 14 bold", bg="#C6D9E3")
+        lblproveedor.place(x=10, y=80)
+        self.proveedor = ttk.Entry(labelframe, font="sans 14 bold")
+        self.proveedor.place(x=140, y=80, width=240, height=40)
+
+        lblprecio = Label(labelframe, text="precio: ", font="sans 14 bold", bg="#C6D9E3")
+        lblprecio.place(x=10, y=140)
+        self.precio = ttk.Entry(labelframe, font="sans 14 bold")
+        self.precio.place(x=140, y=140, width=240, height=40)
+
+
