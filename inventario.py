@@ -40,4 +40,18 @@ class Inventario(tk.Frame):
         self.precio = ttk.Entry(labelframe, font="sans 14 bold")
         self.precio.place(x=140, y=140, width=240, height=40)
 
+        lblcosto = Label(labelframe, text="costo: ", font="sans 14 bold", bg="#C6D9E3")
+        lblcosto.place(x=10, y=200)
+        self.costo = ttk.Entry(labelframe, font="sans 14 bold")
+        self.costo.place(x=140, y=200, width=240, height=40)
 
+        lblstock = Label(labelframe, text="stock: ", font="sans 14 bold", bg="#C6D9E3")
+        lblstock.place(x=10, y=260)
+        self.stock = ttk.Entry(labelframe, font="sans 14 bold")
+        self.costo.place(x=140, y=260, width=240, height=40)
+
+        boton_agregar = tk.Button(labelframe, text="ingresar", font="sans 14 bold", bg="#dddddd")
+        boton_agregar.place(x=80, y=340, width=240, height=40)       
+
+        boton_editar = tk.Button(labelframe, text="editar", font="sans 14 bold", bg="#dddddd")
+        boton_editar.place(x=80, y=400, width=240, height=40)
