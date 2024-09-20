@@ -48,10 +48,41 @@ class Inventario(tk.Frame):
         lblstock = Label(labelframe, text="stock: ", font="sans 14 bold", bg="#C6D9E3")
         lblstock.place(x=10, y=260)
         self.stock = ttk.Entry(labelframe, font="sans 14 bold")
-        self.costo.place(x=140, y=260, width=240, height=40)
+        self.stock.place(x=140, y=260, width=240, height=40)
 
         boton_agregar = tk.Button(labelframe, text="ingresar", font="sans 14 bold", bg="#dddddd")
         boton_agregar.place(x=80, y=340, width=240, height=40)       
 
         boton_editar = tk.Button(labelframe, text="editar", font="sans 14 bold", bg="#dddddd")
         boton_editar.place(x=80, y=400, width=240, height=40)
+        
+
+        #Tabla
+        treFrame = Frame(frame2, bg="white")
+        treFrame.place(x=440, y=50, width=620, height=400)
+
+        scrol_y = ttk.Scrollbar(treFrame)
+        scrol_y.pack(side=RIGHT, fill=Y)
+
+        scrol_x = ttk.Scrollbar(treFrame, orient=HORIZONTAL)
+        scrol_x.pack(side=BOTTOM, fill=X)
+
+        self.tre = ttk.Treeview(treFrame, yscrollcommand=scrol_y.set, xscrollcommand=scrol_x.set, height=40, columns=("id", "producto", "proveedor", "precio", "costo", "stock"), show="headings")
+        self.tre.pack(expand=True, fill=BOTH)
+
+        scrol_y.config(command=self.tre.yview)
+        scrol_x.config(command=self.tre.xview)
+
+        self.tre.heading("id", text="id")
+        self.tre.heading("producto", text="producto")
+        self.tre.heading("proveedor", text="proveedor")
+        self.tre.heading("precio", text="precio")
+        self.tre.heading("costo", text="costo")
+        self.tre.heading("stock", text="stock")
+
+        self.tre.column("id", width=70, anchor="center")
+        self.tre.column("producto", width=100, anchor="center")
+        self.tre.column("proveedor", width=100, anchor="center")
+        self.tre.column("precio", width=100, anchor="center")
+        self.tre.column("costo", width=100, anchor="center")
+        self.tre.column("stock", width=70, anchor="center")
