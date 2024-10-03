@@ -1,6 +1,6 @@
 from tkinter import Tk, Frame
 from container import Container
-
+from ttkthemes import ThemedStyle
 
 class Manager(Tk):
     def __init__(self, *args, **kwargs):
@@ -23,6 +23,8 @@ class Manager(Tk):
 
         self.show_frame(Container)
 
+        self.set_theme()
+
     def load_frames(self):
         for FrameClass in self.frames.keys():
             frame = FrameClass(self.container, self)
@@ -31,6 +33,9 @@ class Manager(Tk):
     def show_frame(self, frame_class):
         frame = self.frames[frame_class]
         frame.tkraise()
+    def set_theme(self):
+        style = ThemedStyle(self)
+        style.set_theme("breeze")
 
 def main():
       app = Manager()
