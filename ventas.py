@@ -134,5 +134,118 @@ class Ventas(tk.Frame):
             subtotal = float(self.tree.item(child, "values") [3])
             total += subtotal
         self.label_suma_total.config(text=f"Total a pagar: Bs {total:.0f}")
+
+    def registrar(self):
+        producto = self.entry_nombre.get()
+        precio = self.entry_valor.get()
+        cantidad = self.entry_cantidad.get()
+
+        if producto and precio and cantidad:
+            try:
+                cantidad = int(cantidad)
+                if not self.verificar_stock(producto, cantidad):
+                    messagebox.showerror("Error", "Stock insufiente para el producto seleccionado")
+                    return
+                precio = float(precio)
+                subtotal = cantidad*precio
+
+                self.tree.insert("", "end", values=(producto, f"{precio:.0f}", cantidad, f"subtotal:.0f"))
+
+                self.entry_nombre.set("")
+                self.entry_valor.config(state="normal")
+                self.entry_valor.delete(0, tk.END)
+                self.entry_valor.config(state="readonly")
+                self.entry_cantidad.delete(0, tk.END)
+
+                self.actualizar_total()
+            except ValueError:
+                messagebox.showerror("Error", "Cantidad o precio no validos")
+        else:
+            messagebox.showerror("Error", "Debe completar todos los campos")
+
+    def verificar_stock(self, nombre_producto, cantidad):
+        try:
+            conn = sqlite3.connect(self.db_name)
+            c = conn.cursor()
+            c.execute("SELECT stock FROM inventario WHERE nombre = ?", (nombre_producto,))
+            stock = c.fetchone()
+            if stock and stock[0] >= cantidad:
+                return True
+            return False
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Error al verificar el stock: {e}")
+            return False
+        finally:
+            conn.close()
+
+    def obtener_total(self):
+        total = 0.0
+        for child in self.tree.get_children():
+            subtotal = float(self.tree.item(child, "values") [3])
+            total += subtotal
+        return total
+    
+    def abrir_ventana_pago(self):
+        if not self.tree.get_children():
+            messagebox.showerror("Error", "No hay articulos para pagar")
+            return
+        
+        ventana_pago = Toplevel(self)
+        ventana_pago.title("Realizar pago")
+        ventana_pago.geometry("400x400")
+        ventana_pago.config(bg="#C6D9E3")
+        ventana_pago.resizable(False, False)
+
+        label_total = tk.Label(ventana_pago, bg="#C6D9E3", text=f"Total a pagar : Bs {self.obtener_total():.of}", font="sans 18 bold")
+        label_total.place(x=70, y=20)
+
+        label_cantidad_pagada = tk.Label(ventana_pago, bg="#C6D9E3", text="Cantidad pagada:", font="sans 14 bold")
+        label_cantidad_pagada.place(x=100, y=90)
+        entry_cantidad_pagada = ttk.Entry(ventana_pago, font="sans 14 bold")
+        entry_cantidad_pagada.place(x=100, y=130)
+
+        label_cambio = tk.Label(ventana_pago, bg="#C6D9E3", text="", font="sans 14 bold")
+        label_cambio.place(x=100, y=190)
+
+        def calcular_cambio():
+            try:
+                cantidad_pagada = float(entry_cantidad_pagada.get())
+                total = self.obtener_total()
+                cambio = cantidad_pagada - total
+                if cambio < 0:
+                    messagebox.showerror("Error", "La cantidad pagada es insuficiente")
+                    return
+                label_cambio.config(text=f"Vuelto: Bs {cambio:.0f}")
+            except ValueError:
+                messagebox.showerror("Error", "Cantidad pagada no valida")
+        boton_calcular = tk.Button(ventana_pago, text="Calcular Vuelto", bg="white", font="sans 12 bold", command=calcular_cambio)
+        boton_calcular.place(x=100, y=240, height=40)
+
+        boton_pagar = tk.Button(ventana_pago, text="Pagar", bg="white", font="sans 12 bold", command=lambda: self.pagar(ventana_pago, entry_cantidad_pagada, label_cambio))
+        boton_calcular.place(x=100, y=300, height=40)
+
+    def pagar(self, ventana_pago, entry_cantidad_pagada, label_cambio):
+        try:
+            cantidad_pagada = float(entry_cantidad_pagada.get())
+            total = self.obtener_total()
+            cambio = cantidad_pagada - total
+            if cambio <0:
+                messagebox.showerror("Error", "La cantidad pagada es insuficiente")
+                return
+            
+            conn = sqlite3.connect(self.db_name)
+            c = conn.cursor()
+            try:
+                for child in self.tree.get_children():
+                    item = self.tree.item(child, "values")
+                    nombre_producto = item[0]
+                    cantidad_vendida = int(item[2])
+                    if not self.verificar_stock(nombre_producto, cantidad_vendida):
+                        messagebox.showerror("Error", f"Stock insuficiente para el producto: {nombre_producto}")
+                        return
+                    
+                    c.execute("INSERT INTO ventas (factura, nombre_articulo, valor_articulo, cantidad, subtotal) VALUES (?,?,?,?,?)", (self.numero_factura_actual, nombre_producto, float(item[1]), cantidad_vendida, float(item[3])))
+                    
+
     
     
