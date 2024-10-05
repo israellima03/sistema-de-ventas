@@ -62,7 +62,7 @@ class Ventas(tk.Frame):
         scrol_y.pack(side=RIGHT, fill=Y)
 
         scrol_x = ttk.Scrollbar(treFrame, orient=HORIZONTAL)
-        scrol_x.pack(side=BOTTOM, fill=Y)
+        scrol_x.pack(side=BOTTOM, fill=X)
 
         self.tree = ttk.Treeview(treFrame, columns=("producto","precio","cantidad","subtotal"), show= "headings", height=10, yscrollcommand=scrol_y.set, xscrollcommand=scrol_x.set)
         scrol_y.config(command=self.tree.yview)
@@ -172,7 +172,7 @@ class Ventas(tk.Frame):
             conn = sqlite3.connect(self.db_name)
             c = conn.cursor()
             c.execute("SELECT stock FROM inventario WHERE nombre = ?", (nombre_producto,))
-            stock = c.fetchone()
+            stock = c.fetchone() 
             if stock and stock[0] >= cantidad:
                 return True
             return False
@@ -222,11 +222,12 @@ class Ventas(tk.Frame):
                 label_cambio.config(text=f"Vuelto: Bs {cambio:.0f}")
             except ValueError:
                 messagebox.showerror("Error", "Cantidad pagada no valida")
-        boton_calcular = tk.Button(ventana_pago, text="Calcular Vuelto", bg="white", font="sans 12 bold", command=calcular_cambio)
-        boton_calcular.place(x=100, y=240, height=40)
 
-        boton_calcular = tk.Button(ventana_pago, text="Pagar", bg="white", font="sans 12 bold", command=lambda: self.pagar(ventana_pago, entry_cantidad_pagada, label_cambio))
-        boton_calcular.place(x=100, y=300, height=40)
+        boton_calcular = tk.Button(ventana_pago, text="Calcular Vuelto", bg="white", font="sans 12 bold", command=calcular_cambio)
+        boton_calcular.place(x=100, y=240, width= 240, height=40)
+
+        boton_pagar = tk.Button(ventana_pago, text="Pagar", bg="white", font="sans 12 bold", command=lambda: self.pagar(ventana_pago, entry_cantidad_pagada, label_cambio))
+        boton_pagar.place(x=100, y=300, width=240, height=40)
 
     def pagar(self, ventana_pago, entry_cantidad_pagada, label_cambio):
         try:
@@ -250,7 +251,7 @@ class Ventas(tk.Frame):
                     
                     c.execute("INSERT INTO ventas (factura, nombre_articulo, valor_articulo, cantidad, subtotal) VALUES (?,?,?,?,?)", (self.numero_factura_actual, nombre_producto, float(item[1]), cantidad_vendida, float(item[3])))
 
-                    c.execute("UPDATE inventario SET stock - stock - ? WHERE nombre = ?", (cantidad_vendida, nombre_producto))
+                    c.execute("UPDATE inventario SET stock = stock - ? WHERE nombre = ?", (cantidad_vendida, nombre_producto))
                 conn.commit()
                 messagebox.showinfo("Existo", "Venta registrada exitosamente")
 
@@ -268,6 +269,7 @@ class Ventas(tk.Frame):
                 messagebox.showerror("Error", f"Error al registrar la venta: {e}")
             finally:
                 conn.close()
+
         except ValueError:
             messagebox.showerror("Error", "Cantidad pagada no valida")
 
@@ -291,23 +293,23 @@ class Ventas(tk.Frame):
         self.numero_factura.set(self.numero_factura_actual)
       
     def abrir_ventana_factura(self):
-        ventana_facturas = Toplevel
+        ventana_facturas = Toplevel(self)
         ventana_facturas.title("Factura")
         ventana_facturas.geometry("800x500")
         ventana_facturas.config(bg="#C6D9E3")
         ventana_facturas.resizable(False, False)
 
-        facturas = Label(ventana_facturas, bg="#C6D9E3")
+        facturas = Label(ventana_facturas, bg="#C6D9E3", text="facturas registradas", font="sans 36 bold")
         facturas.place(x=150, y=15)
 
         treFrame = tk.Frame(ventana_facturas, bg="#C6D9E3")
-        treFrame.place(x=100, width=780, height=380)
+        treFrame.place(x=10, y=100, width=780, height=380)
 
         scrol_y = ttk.Scrollbar(treFrame, orient=VERTICAL)
         scrol_y.pack(side=RIGHT, fill=Y)
 
         scrol_x = ttk.Scrollbar(treFrame, orient=HORIZONTAL)
-        scrol_x.pack(side=BOTTOM, fill=Y)
+        scrol_x.pack(side=BOTTOM, fill=X)
 
         tree_facturas = ttk.Treeview(treFrame, columns=("ID", "Factura", "Producto", "Precio", "Cantidad", "Subtotal"), show= "headings", height=10, yscrollcommand=scrol_y.set, xscrollcommand=scrol_x.set)
         scrol_y.config(command=tree_facturas.yview)
@@ -330,6 +332,7 @@ class Ventas(tk.Frame):
         tree_facturas.pack(expand=True, fill=BOTH)
 
         self.cargar_facturas(tree_facturas)
+
     def cargar_facturas(self, tree):
         try:
             conn = sqlite3.connect(self.db_name)
