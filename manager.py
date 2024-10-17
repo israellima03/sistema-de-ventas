@@ -33,6 +33,7 @@ class Manager(Tk):
     def show_frame(self, frame_class):
         frame = self.frames[frame_class]
         frame.tkraise()
+        
     def set_theme(self):
         style = ThemedStyle(self)
         style.set_theme("breeze")
