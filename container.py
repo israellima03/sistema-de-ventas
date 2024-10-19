@@ -40,6 +40,10 @@ class Container(tk.Frame):
         frame1.pack()
         frame1.place(x=0, y=0, width=800, height=400)
 
+        imagen_pil = Image.open("icono/btnventas.png")
+        imagen_resize = imagen_pil.resize((50,50))
+        imagen_tk = ImageTk
+
         btnventas = Button(frame1, bg="#f4b400", fg="white", font="sans 18 bold", text="ir a ventas", command=self.ventas)
         btnventas.place(x=500, y=30, width=240, height=60)
 
@@ -56,14 +60,4 @@ class Container(tk.Frame):
         copyright_label = tk.Label(frame1, text="© 2024 Lima technology corporation. Todos los derechos Reservado", font="sans 12 bold", bg="#C6D9E3", fg="gray")
         copyright_label.place(x=180, y=350)
 
-        self.logo_image = Image.open("imagenes/images.png")
-        self.logo_image = self.logo_image.resize((280,280))
-        self.logo_image = ImageTk.PhotoImage(self.logo_image)
-        self.logo_label = tk.Label(frame1, image=self.logo_image, bg="#C6D9E3")
-        self.logo_label.place(x=100, y=30)
-
-        self.logo_image = Image.open("imagenes/images.png")
-        self.logo_image = self.logo_image.resize((280,280))
-        self.logo_image = ImageTk.PhotoImage(self.logo_image)
-        self.logo_label = tk.Label(frame1, image=self.logo_image, bg="#C6D9E3")
-        self.logo_label.place(x=100, y=30)
+  
