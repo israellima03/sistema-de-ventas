@@ -180,13 +180,13 @@ class Inventario(tk.Frame):
         lbl_nombre.grid(row=0, column=0, padx=10, pady=10)
         entry_nombre = Entry(ventana_editar, font="sans 14 bold")
         entry_nombre.grid(row=0, column=1, padx=10, pady=10)
-        entry_nombre.insert(0, item_values[2])
+        entry_nombre.insert(0, item_values[1])
 
         lbl_proveedor = Label(ventana_editar, text="Proveedor:", font="sans 14 bold", bg="#C6D9E3")
         lbl_proveedor.grid(row=1, column=0, padx=10, pady=10)
         entry_proveedor = Entry(ventana_editar, font="sans 14 bold")
         entry_proveedor.grid(row=1, column=1, padx=10, pady=10)
-        entry_proveedor.insert(0, item_values[1])
+        entry_proveedor.insert(0, item_values[2])
 
         lbl_precio = Label(ventana_editar, text="Precio:", font="sans 14 bold", bg="#C6D9E3")
         lbl_precio.grid(row=2, column=0, padx=10, pady=10)
