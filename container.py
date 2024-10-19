@@ -42,12 +42,20 @@ class Container(tk.Frame):
 
         imagen_pil = Image.open("icono/btnventas.png")
         imagen_resize = imagen_pil.resize((50,50))
-        imagen_tk = ImageTk
+        imagen_tk = ImageTk.PhotoImage(imagen_resize)
 
         btnventas = Button(frame1, bg="#f4b400", fg="white", font="sans 18 bold", text="ir a ventas", command=self.ventas)
+        btnventas.config(image=imagen_tk, compound=LEFT, padx=50)
+        btnventas.image = imagen_tk
         btnventas.place(x=500, y=30, width=240, height=60)
 
+        imagen_pil = Image.open("icono/btninventario.png")
+        imagen_resize = imagen_pil.resize((50,50))
+        imagen_tk = ImageTk.PhotoImage(imagen_resize)
+
         btninventario = Button(frame1, bg="#c62e26", fg="white", font="sans 18 bold" ,text="ir a invertario", command=self.inventario)
+        btninventario.config(image=imagen_tk, compound=LEFT, padx=50)
+        btninventario.image = imagen_tk
         btninventario.place(x=500, y=130, width=240, height=60)
 
         self.logo_image = Image.open("imagenes/images.png")

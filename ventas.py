@@ -3,6 +3,13 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkinter import Scrollbar
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+import datetime
+import sys
+import os
 
 class Ventas(tk.Frame):
     db_name = "database.db"
@@ -241,17 +248,19 @@ class Ventas(tk.Frame):
             conn = sqlite3.connect(self.db_name)
             c = conn.cursor()
             try:
+                productos = []
                 for child in self.tree.get_children():
                     item = self.tree.item(child, "values")
-                    nombre_producto = item[0]
+                    producto = item[0]
+                    precio = item[1]
                     cantidad_vendida = int(item[2])
-                    if not self.verificar_stock(nombre_producto, cantidad_vendida):
-                        messagebox.showerror("Error", f"Stock insuficiente para el producto: {nombre_producto}")
-                        return
+                    subtotal = float(item[3])
+                    productos.append([producto, precio, cantidad_vendida, subtotal])
                     
-                    c.execute("INSERT INTO ventas (factura, nombre_articulo, valor_articulo, cantidad, subtotal) VALUES (?,?,?,?,?)", (self.numero_factura_actual, nombre_producto, float(item[1]), cantidad_vendida, float(item[3])))
+                    
+                    c.execute("INSERT INTO ventas (factura, nombre_articulo, valor_articulo, cantidad, subtotal) VALUES (?,?,?,?,?)", (self.numero_factura_actual, producto, float(precio), cantidad_vendida, subtotal))
 
-                    c.execute("UPDATE inventario SET stock = stock - ? WHERE nombre = ?", (cantidad_vendida, nombre_producto))
+                    c.execute("UPDATE inventario SET stock = stock - ? WHERE nombre = ?", (cantidad_vendida, producto))
                 conn.commit()
                 messagebox.showinfo("Existo", "Venta registrada exitosamente")
 
