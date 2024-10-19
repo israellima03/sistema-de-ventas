@@ -261,6 +261,7 @@ class Ventas(tk.Frame):
                     c.execute("INSERT INTO ventas (factura, nombre_articulo, valor_articulo, cantidad, subtotal) VALUES (?,?,?,?,?)", (self.numero_factura_actual, producto, float(precio), cantidad_vendida, subtotal))
 
                     c.execute("UPDATE inventario SET stock = stock - ? WHERE nombre = ?", (cantidad_vendida, producto))
+
                 conn.commit()
                 messagebox.showinfo("Existo", "Venta registrada exitosamente")
 
@@ -272,6 +273,9 @@ class Ventas(tk.Frame):
                 self.label_suma_total.config(text="Total a pagar : Bs 0")
 
                 ventana_pago.destroy()
+
+                fecha = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.generar_factura_pdf(productos, total, self.numero_factura_actual - 1, fecha)
             
             except sqlite3.Error as e:
                 conn.rollback()
@@ -281,6 +285,42 @@ class Ventas(tk.Frame):
 
         except ValueError:
             messagebox.showerror("Error", "Cantidad pagada no valida")
+
+    def generar_factura_pdf(self, productos, total, factura_numero, fecha):
+        archivo_pdf = f"facturas/factura_{factura_numero}.pdf"
+
+        c = canvas.Canvas(archivo_pdf, pagesize=letter)
+        width, height = letter
+
+        styles = getSampleStyleSheet()
+        estilo_titulo = styles["Title"]
+        estilo_normal = styles["Normal"]
+
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(100, height - 50, f"Factura #{factura_numero}")
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(100, height - 70, f"Fecha: {fecha}")
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(100, height - 100, "Informacion de la venta")
+
+        data = [["Producto", "Precio", "Cantidad", "Subtotal"]] + productos
+        table = Table(data)
+        table.wrapOn(c, width, height)
+        table.drawOn(c, 100, height - 200)
+
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(100, height - 250, f"Total a pagar: Bs {total:.0f}")
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(100, height - 400, f"Gracias por su compra, vuelva pronto")
+
+        c.save()
+
+        messagebox.showinfo("Factura Generada", f"La factura #{factura_numero} ha sido creada exitosamente")
+
+        os.startfile(os.path.abspath(archivo_pdf))
 
     def obtener_numero_factura_actual(self):
         conn = sqlite3.connect(self.db_name)
