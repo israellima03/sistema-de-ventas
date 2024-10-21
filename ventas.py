@@ -20,6 +20,13 @@ class Ventas(tk.Frame):
         self.widgets()
         self.mostrar_numero_factura()
 
+    def rutas(self, ruta):
+        try:
+            rutabase=sys.__MEIPASS
+        except Exception:
+            rutabase=os.path.abspath(".")
+        return os.path.join(rutabase,ruta) 
+
     def widgets(self):
 
         frame1 = tk.Frame(self, bg="#dddddd", highlightbackground="gray", highlightthickness=1)
